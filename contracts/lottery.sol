@@ -4,6 +4,7 @@ pragma solidity >=0.5.0 <0.9.0;
 
 contract lottery{
     address public manager;
+            address payable winner;
     address payable[] public participants;
 
     constructor()
@@ -27,14 +28,19 @@ contract lottery{
        return uint (keccak256(abi.encodePacked(block.difficulty,block.timestamp,participants.length)));
     }
 
-    function selectWinner() public view returns (address)
+    function selectWinner() public returns (address)
     {
         require(msg.sender==manager);
         require(participants.length >=3);
         uint r = random();
-        address payable winner;
         uint index= r% participants.length;
         winner = participants[index];
-        return winner; 
+        return winner;
+        participants=new address payable[](0); 
+    }
+
+    function transfer () public payable {
+    require(msg.sender==manager);
+    winner.transfer(getBalance());
     }
 }
