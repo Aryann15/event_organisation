@@ -36,6 +36,11 @@ contract event_Contract{
         tickets[msg.sender][id] += quantity;
 
     }
-
-    
+    function transferTicket (uint id, uint quantity, address to) external{
+        require(events[id].date!=0,"this event does not exist");
+        require(events[id].date> block.timestamp," event has already occured");
+        require(tickets[msg.sender][id] >=quantity, "you do not have enough tickets");
+        tickets[msg.sender][id] -= quantity;
+        tickets[to][id] +=quantity;
+    }
 }
